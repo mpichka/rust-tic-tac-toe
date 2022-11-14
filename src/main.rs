@@ -4,7 +4,7 @@ mod player;
 
 use board::Board;
 use input::Input;
-use player::PlayerObj;
+use player::{Player, PlayerObj};
 
 fn main() {
     loop {
@@ -12,40 +12,28 @@ fn main() {
         clean_screen();
         println!("Вітаю в грі хрестики-нолики!");
 
-        println!("Виберіть свого бійця: [Х]рестик чи н[О]лик!");
+        println!("Виберіть свою фігуру: [Х]рестик чи н[О]лик!");
         let input = Input::read_char();
         let mut player = PlayerObj::select_player(input);
         println!("Ви граєте за {}.", PlayerObj::map_player_to_string(&player));
+
+        match player {
+            Player::O => {
+                // First AI move
+                player = PlayerObj::switch_move(player);
+                board.make_ai_move(&player);
+                player = PlayerObj::switch_move(player);
+            }
+            Player::X => (),
+        }
 
         let winner = loop {
             board.print();
             PlayerObj::print_next_player(&player);
 
             // Player move
-            loop {
-                println!(
-                    "Впиздячте номер клітки куди ви бажаєте хуйнути свій {}, будь ласка:",
-                    PlayerObj::map_player_to_string(&player)
-                );
-                let input = Input::read_char();
-                let key = match Input::validate_board_input(input) {
-                    Ok(key) => key,
-                    Err(err) => {
-                        println!("{}", err);
-                        continue;
-                    }
-                };
-                match board.make_move(&player, key) {
-                    Ok(()) => {
-                        println!("Заєбість!");
-                        break;
-                    }
-                    Err(err) => {
-                        println!("{}", err);
-                        continue;
-                    }
-                };
-            }
+            board = player_move(&player, board);
+
             match board.check_winner() {
                 Ok(winner) => break winner,
                 Err(_) => (),
@@ -54,11 +42,13 @@ fn main() {
                 Ok(draw) => break draw,
                 Err(_) => (),
             };
-            player = PlayerObj::switch_move(player);
 
             // AI move
             clean_screen();
+            player = PlayerObj::switch_move(player);
             board.make_ai_move(&player);
+            player = PlayerObj::switch_move(player);
+
             match board.check_winner() {
                 Ok(winner) => break winner,
                 Err(_) => (),
@@ -67,7 +57,6 @@ fn main() {
                 Ok(draw) => break draw,
                 Err(_) => (),
             };
-            player = PlayerObj::switch_move(player);
         };
 
         board.print();
@@ -94,4 +83,33 @@ fn clean_screen() {
         println!("");
         i += 1;
     }
+}
+
+fn player_move(player: &Player, mut board: Board) -> Board {
+    loop {
+        println!(
+            "Впиздячте номер клітки куди ви бажаєте хуйнути свій {}, будь ласка:",
+            PlayerObj::map_player_to_string(&player)
+        );
+        let input = Input::read_char();
+        let key = match Input::validate_board_input(input) {
+            Ok(key) => key,
+            Err(err) => {
+                println!("{}", err);
+                continue;
+            }
+        };
+        match board.make_move(&player, key) {
+            Ok(()) => {
+                println!("Заєбість!");
+                break;
+            }
+            Err(err) => {
+                println!("{}", err);
+                continue;
+            }
+        };
+    }
+
+    board
 }
