@@ -37,4 +37,4 @@ Then you can open game by command.
 \*  -  You must have a Rust compiler.
 
 
-## Have fun!
+### Have fun!
