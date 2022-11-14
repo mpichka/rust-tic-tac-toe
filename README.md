@@ -28,7 +28,7 @@ Then you can open game by command.
 
 ./target/release/tic-tac-toe
 
-#or, on windows:
+#windows:
 
 ./target/release/tic-tac-toe.exe
 ```
