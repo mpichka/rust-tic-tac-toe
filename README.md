@@ -4,8 +4,8 @@
 
 ## Preview:
 
-![image](./resources/game_1.jpg)
-![image](./resources/game_2.jpg)
+![image](./resources/game_1.JPG)
+![image](./resources/game_2.JPG)
 
 
 ## Rules:
