@@ -69,7 +69,7 @@ impl Board {
                 match players_char {
                     'X' => return Err("Ви вже сюди ходили..."),
                     'O' => return Err("Сюди вже походив бот..."),
-                    _ => return Err("Неможливо поставити мітку"),
+                    _ => return Err("Неможливо поставити мітку!!!"),
                 };
             }
             'O' => {
